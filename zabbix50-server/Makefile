@@ -5,7 +5,7 @@ PORTNAME=	zabbix50
 PORTVERSION=	5.0.0
 PORTREVISION?=	0
 CATEGORIES=	net-mgmt
-MASTER_SITES=	https://cdn.zabbix.com/zabbix/sources/stable/${PORTVERSION:C/\.[^\.]*$//}/
+MASTER_SITES?=	https://cdn.zabbix.com/zabbix/sources/stable/${PORTVERSION:C/\.[^\.]*$//}/
 PKGNAMESUFFIX?=	-server
 DISTNAME=	zabbix-${PORTVERSION}
 
@@ -24,7 +24,7 @@ CONFLICTS=	zabbix[0-46-9][0-9]${PKGNAMESUFFIX} \
 ZABBIX_BUILD=	${PKGNAMESUFFIX:S/^-//}
 
 .if ${ZABBIX_BUILD} != "frontend" # frontend only needs the version/distribution settings
-.if ${ZABBIX_BUILD} != "agent"
+.if ${ZABBIX_BUILD:Nagent*}
 CONFIGURE_ARGS+=	--with-libevent=${LOCALBASE} --cache-file=${WRKSRC}/config.cache
 LIB_DEPENDS+=	libevent.so:devel/libevent
 USE_RC_SUBR=	zabbix_${ZABBIX_BUILD}
@@ -32,7 +32,7 @@ USE_RC_SUBR=	zabbix_${ZABBIX_BUILD}
 USE_RC_SUBR=	zabbix_${ZABBIX_BUILD}d
 .endif
 
-USES=		pkgconfig iconv
+USES?=		pkgconfig iconv
 
 USERS=		zabbix
 GROUPS=		zabbix
@@ -189,7 +189,7 @@ post-install:
 	@${MKDIR} ${STAGEDIR}/var/run/zabbix
 .endif
 
-.if ${ZABBIX_BUILD} != "agent" && ${ZABBIX_BUILD} != "java"
+.if ${ZABBIX_BUILD:Nagent*} && ${ZABBIX_BUILD} != "java"
 	${MKDIR} ${STAGEDIR}${DATADIR}/${ZABBIX_BUILD:Q}/database
 	@${RM} ${WRKSRC}/database/*/Makefile*
 	(cd ${WRKSRC}/database/ && \
