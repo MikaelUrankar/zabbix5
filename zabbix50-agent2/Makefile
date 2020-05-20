@@ -4,6 +4,9 @@
 # XXX
 # - backport fix from
 #   https://people.freebsd.org/~dbaio/zabbix44-agent2-go-test.patch
+#
+# - cp zabbix50-server/files/zabbix_agentd.in zabbix50-server/files/zabbix_agent2d.in
+#   adjust accordingly
 
 PORTNAME=	zabbix50
 CATEGORIES=	net-mgmt
@@ -43,7 +46,10 @@ do-build:
 	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} ${MAKE_CMD} ${MAKE_ARGS}
 
 do-install:
+	${MKDIR} ${STAGEDIR}${ETCDIR}
 	${INSTALL_PROGRAM} ${WRKSRC}/src/go/bin/mock_server ${STAGEDIR}${LOCALBASE}/bin
 	${INSTALL_PROGRAM} ${WRKSRC}/src/go/bin/zabbix_agent2 ${STAGEDIR}${LOCALBASE}/bin
+	${CP} ${WRKSRC}/src/go/conf/zabbix_agent2.conf ${STAGEDIR}${ETCDIR}/zabbix_agent2.conf.sample
+	${CP} ${WRKSRC}/src/go/conf/mock_server.conf ${STAGEDIR}${ETCDIR}/mock_server.conf.sample
 
 .include "${MASTERDIR}/Makefile"

@@ -1,2 +1,4 @@
-bin/zabbix_agent2
+%%ETCDIR%%/zabbix_agent2.conf.sample
+%%ETCDIR%%/mock_server.conf.sample
 bin/mock_server
+bin/zabbix_agent2
