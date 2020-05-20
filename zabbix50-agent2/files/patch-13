@@ -1,0 +1,11 @@
+--- src/go/Makefile.am.orig	2020-05-20 13:26:45.358991000 +0200
++++ src/go/Makefile.am	2020-05-20 13:27:05.904296000 +0200
+@@ -19,7 +19,7 @@ GOLDFLAGS += -X main.confDefault=${AGENT2_CONFIG_FILE}
+ all: build
+ 
+ build:
+-	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -ldflags="${GOLDFLAGS}" -o bin ./...
++	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -mod=vendor -ldflags="${GOLDFLAGS}" -o bin ./...
+ 
+ clean:
+ 	go clean ./...
