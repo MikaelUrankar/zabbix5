@@ -1,9 +1,9 @@
---- src/go/plugins/system/uname/uname_freebsd.go.orig   2020-05-20 10:56:50 UTC
-+++ src/go/plugins/system/uname/uname_freebsd.go
-@@ -0,0 +1,70 @@
+--- src/go/plugins/system/uname/uname_freebsd.go.orig	2020-05-20 10:56:50.872106000 +0200
++++ src/go/plugins/system/uname/uname_freebsd.go	2020-05-20 10:38:19.374078000 +0200
+@@ -0,0 +1,83 @@
 +/*
 +** Zabbix
-+** Copyright (C) 2001-2019 Zabbix SIA
++** Copyright (C) 2001-2020 Zabbix SIA
 +**
 +** This program is free software; you can redistribute it and/or modify
 +** it under the terms of the GNU General Public License as published by
@@ -23,13 +23,14 @@
 +package uname
 +
 +import (
++	"errors"
 +	"fmt"
 +
 +	"golang.org/x/sys/unix"
 +)
 +
 +func arrayToString(unameArray *[256]byte) string {
-+	var byteString [65]byte
++	var byteString [256]byte
 +	var indexLength int
 +	for ; indexLength < len(unameArray); indexLength++ {
 +		if 0 == unameArray[indexLength] {
@@ -40,7 +41,11 @@
 +	return string(byteString[:indexLength])
 +}
 +
-+func getUname() (uname string, err error) {
++func getUname(params []string) (uname string, err error) {
++	if len(params) > 0 {
++		return "", errors.New("Too many parameters.")
++	}
++
 +	var utsname unix.Utsname
 +	if err = unix.Uname(&utsname); err != nil {
 +		err = fmt.Errorf("Cannot obtain system information: %s", err.Error())
@@ -52,7 +57,11 @@
 +	return uname, nil
 +}
 +
-+func getHostname() (hostname string, err error) {
++func getHostname(params []string) (hostname string, err error) {
++	if len(params) > 0 {
++		return "", errors.New("Too many parameters.")
++	}
++
 +	var utsname unix.Utsname
 +	if err = unix.Uname(&utsname); err != nil {
 +		err = fmt.Errorf("Cannot obtain system information: %s", err.Error())
@@ -62,7 +71,11 @@
 +	return arrayToString(&utsname.Nodename), nil
 +}
 +
-+func getSwArch() (uname string, err error) {
++func getSwArch(params []string) (uname string, err error) {
++	if len(params) > 0 {
++		return "", errors.New("Too many parameters.")
++	}
++
 +	var utsname unix.Utsname
 +	if err = unix.Uname(&utsname); err != nil {
 +		err = fmt.Errorf("Cannot obtain system information: %s", err.Error())
