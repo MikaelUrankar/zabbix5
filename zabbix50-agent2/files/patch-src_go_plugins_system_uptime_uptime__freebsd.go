@@ -1,5 +1,5 @@
---- uptime_freebsd.go.orig	2020-05-21 21:14:22.620707000 +0200
-+++ uptime_freebsd.go	2020-05-21 21:14:22.620667000 +0200
+--- src/go/plugins/system/uptime/uptime_freebsd.go.orig	2020-05-21 21:14:22 UTC
++++ src/go/plugins/system/uptime/uptime_freebsd.go
 @@ -0,0 +1,40 @@
 +/*
 +** Zabbix
