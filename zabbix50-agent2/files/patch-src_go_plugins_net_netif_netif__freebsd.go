@@ -1,6 +1,6 @@
---- src/go/plugins/net/netif/netif_freebsd.go.orig	2020-05-20 10:56:50.870637000 +0200
-+++ src/go/plugins/net/netif/netif_freebsd.go	2020-05-20 10:35:15.465677000 +0200
-@@ -0,0 +1,203 @@
+--- src/go/plugins/net/netif/netif_freebsd.go.orig      2020-05-20 10:56:50.870637000 +0200
++++ src/go/plugins/net/netif/netif_freebsd.go   2020-05-20 10:35:15.465677000 +0200
+@@ -0,0 +1,236 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2020 Zabbix SIA
@@ -24,11 +24,14 @@
 +
 +import (
 +	"bufio"
++	"bytes"
 +	"encoding/json"
 +	"errors"
 +	"fmt"
 +	"strconv"
 +	"strings"
++        "log"
++        "os/exec"
 +
 +	"zabbix.com/pkg/plugin"
 +	"zabbix.com/pkg/std"
@@ -41,27 +44,47 @@
 +
 +var stdOs std.Os
 +
++// Name    Mtu Network       Address              Ipkts Ierrs Idrop     Ibytes    Opkts Oerrs     Obytes
++// [wlan0 1500 <Link#3> 80:00:0b:43:15:f2 207388 0 0 148911195 89827 672 10780452 0 0]
 +var mapNetStatIn = map[string]uint{
-+	"bytes":      0,
-+	"packets":    1,
-+	"errors":     2,
-+	"dropped":    3,
-+	"overruns":   4,
-+	"frame":      5,
-+	"compressed": 6,
-+	"multicast":  7,
++	"name":       0,
++	"mtu":        1,
++	"network":    2,
++	"address":    3,
++	"packets":    4,
++	"errors":     5,
++	"dropped":    6,
++	"bytes":      7,
 +}
 +
 +var mapNetStatOut = map[string]uint{
-+	"bytes":      8,
-+	"packets":    9,
-+	"errors":     10,
-+	"dropped":    11,
-+	"overruns":   12,
-+	"collisions": 13,
-+	"carrier":    14,
-+	"compressed": 15,
++	"packets":    8,
++	"errors":     9,
++	"bytes":      10,
++	"collisions": 11,
 +}
++
++//var mapNetStatIn = map[string]uint{
++//	"bytes":      0,
++//	"packets":    1,
++//	"errors":     2,
++//	"dropped":    3,
++//	"overruns":   4,
++//	"collisions": 5,
++//	"carrier":    6,
++//	"compressed": 7,
++//}
++//
++//var mapNetStatOut = map[string]uint{
++//	"bytes":      8,
++//	"packets":    9,
++//	"errors":     10,
++//	"dropped":    11,
++//	"overruns":   12,
++//	"collisions": 13,
++//	"carrier":    14,
++//	"compressed": 15,
++//}
 +
 +func (p *Plugin) addStatNum(statName string, mapNetStat map[string]uint, statNums *[]uint) error {
 +	if statNum, ok := mapNetStat[statName]; ok {
@@ -87,25 +110,38 @@
 +		}
 +	}
 +
-+	file, err := stdOs.Open("/proc/net/dev")
-+	if err != nil {
-+		return 0, fmt.Errorf(errorCannotOpenNetDev, err)
-+	}
-+	defer file.Close()
++	fmt.Println("XXX", networkIf)
++        out, err := exec.Command("/usr/bin/netstat", "-bnI", networkIf).Output()
++        if err != nil {
++                log.Fatal("netstat failed: %v\n", err)
++        }
++        file := bytes.NewBufferString(string(out))
++
++// Name    Mtu Network       Address              Ipkts Ierrs Idrop     Ibytes    Opkts Oerrs     Obytes
++// wlan0  1500 <Link#3>      80:00:0b:43:15:f2   113713     0     0   62192395    43649   313    6019808     0
++// wlan0     - 192.168.1.0/2 192.168.1.70         34341     -     -   19782488    30894     -    3502373     -
++// face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
++//     lo: 3272692   30942    0    0    0     0          0         0  3272692   30942    0    0    0     0       0          0
 +
 +	var total uint64
 +loop:
 +	for sLines := bufio.NewScanner(file); sLines.Scan(); {
-+		dev := strings.Split(sLines.Text(), ":")
++		dev := strings.Split(sLines.Text(), " ")
 +
 +		if len(dev) > 1 && networkIf == strings.TrimSpace(dev[0]) {
-+			stats := strings.Fields(dev[1])
++//			fmt.Println("XXX found dev mik", dev)
++			stats := strings.Fields(sLines.Text())
++			fmt.Println("XXX found dev mik", stats)
++// XXX found dev mik [wlan0 1500 <Link#3> 80:00:0b:43:15:f2 207388 0 0 148911195 89827 672 10780452 0 0]
++//			fmt.Println("XXX statNums", statNums)
++			fmt.Println("XXX len(stats)", len(stats))
 +
-+			if len(stats) >= 16 {
++			if len(stats) >= 12 {
 +				for _, statNum := range statNums {
++					fmt.Println("XXX statNum", statNum)
 +					var res uint64
 +
-+					if res, err = strconv.ParseUint(stats[statNum], 10, 64); err != nil {
++				if res, err = strconv.ParseUint(stats[statNum], 10, 64); err != nil {
 +						break loop
 +					}
 +					total += res
@@ -120,18 +156,15 @@
 +}
 +
 +func (p *Plugin) getDevDiscovery() (netInterfaces []msgIfDiscovery, err error) {
-+	var f std.File
-+	if f, err = stdOs.Open("/proc/net/dev"); err != nil {
-+		return nil, fmt.Errorf(errorCannotOpenNetDev, err)
-+	}
-+	defer f.Close()
++        out, err := exec.Command("/sbin/ifconfig", "-l").Output()
++        if err != nil {
++                log.Fatal("/sbin/ifconfig -a failed: %v\n", err)
++        }
 +
 +	netInterfaces = make([]msgIfDiscovery, 0)
-+	for sLines := bufio.NewScanner(f); sLines.Scan(); {
-+		dev := strings.Split(sLines.Text(), ":")
-+		if len(dev) > 1 {
-+			netInterfaces = append(netInterfaces, msgIfDiscovery{strings.TrimSpace(dev[0])})
-+		}
++	netif := strings.Fields(string(out))
++	for _, i := range netif {
++		netInterfaces = append(netInterfaces, msgIfDiscovery{i})
 +	}
 +
 +	return netInterfaces, nil
