@@ -1,6 +1,6 @@
---- src/go/plugins/plugins_freebsd.go.orig	2020-05-20 10:56:50.870208000 +0200
-+++ src/go/plugins/plugins_freebsd.go	2020-05-20 10:44:15.739724000 +0200
-@@ -0,0 +1,31 @@
+--- plugins_freebsd.go.orig	2020-05-21 11:42:53.409675000 +0200
++++ plugins_freebsd.go	2020-05-21 11:46:17.986388000 +0200
+@@ -0,0 +1,33 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2020 Zabbix SIA
@@ -23,8 +23,10 @@
 +package plugins
 +
 +import (
++	_ "zabbix.com/plugins/kernel"
 +	_ "zabbix.com/plugins/log"
 +	_ "zabbix.com/plugins/memcached"
++	_ "zabbix.com/plugins/mysql"
 +	_ "zabbix.com/plugins/redis"
 +	_ "zabbix.com/plugins/systemrun"
 +	_ "zabbix.com/plugins/web"

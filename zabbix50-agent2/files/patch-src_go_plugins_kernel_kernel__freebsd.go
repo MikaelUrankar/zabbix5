@@ -1,6 +1,6 @@
---- src/go/plugins/kernel/kernel_freebsd.go.orig	2020-05-20 10:56:50.871013000 +0200
-+++ src/go/plugins/kernel/kernel_freebsd.go	2020-05-20 10:36:39.126479000 +0200
-@@ -0,0 +1,56 @@
+--- src/go/plugins/kernel/kernel_freebsd.go.orig	2020-05-21 11:39:04 UTC
++++ src/go/plugins/kernel/kernel_freebsd.go
+@@ -0,0 +1,54 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2020 Zabbix SIA
@@ -23,36 +23,34 @@
 +package kernel
 +
 +import (
-+	"bufio"
 +	"fmt"
++	"os/exec"
 +	"strconv"
++	"strings"
 +)
 +
 +func getMax(proc bool) (max uint64, err error) {
-+	var fileName string
++	var out []byte
++	var result string
 +
 +	if proc {
-+		fileName = "/proc/sys/kernel/pid_max"
-+	} else {
-+		fileName = "/proc/sys/fs/file-max"
-+	}
-+
-+	file, err := stdOs.Open(fileName)
-+	if err == nil {
-+		var line []byte
-+		var long bool
-+
-+		reader := bufio.NewReader(file)
-+
-+		if line, long, err = reader.ReadLine(); err == nil && !long {
-+			max, err = strconv.ParseUint(string(line), 10, 64)
++		out, err = exec.Command("/sbin/sysctl", "-n", "kern.pid_max").Output()
++		if err != nil {
++			err = fmt.Errorf("sysctl -n kern.pid_max failed: %v\n", err)
 +		}
-+
-+		file.Close()
++		result = strings.TrimRight(string(out), "\n")
++		max, err = strconv.ParseUint(string(result), 10, 64)
++	} else {
++		out, err = exec.Command("/sbin/sysctl", "-n", "kern.maxfiles").Output()
++		if err != nil {
++			err = fmt.Errorf("sysctl -n kern.maxfiles failed: %v\n", err)
++		}
++		result = strings.TrimRight(string(out), "\n")
++		max, err = strconv.ParseUint(string(result), 10, 64)
 +	}
 +
 +	if err != nil {
-+		err = fmt.Errorf("Cannot obtain data from %s.", fileName)
++		err = fmt.Errorf("Cannot obtain data from kernel.")
 +	}
 +
 +	return
