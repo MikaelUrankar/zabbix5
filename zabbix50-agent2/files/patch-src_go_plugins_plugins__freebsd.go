@@ -1,6 +1,6 @@
---- plugins_freebsd.go.orig	2020-05-21 11:42:53.409675000 +0200
-+++ plugins_freebsd.go	2020-05-21 11:46:17.986388000 +0200
-@@ -0,0 +1,35 @@
+--- src/go/plugins/plugins_freebsd.go.orig	2020-05-21 11:42:53.409675000 +0200
++++ src/go/plugins/plugins_freebsd.go	2020-05-21 11:46:17.986388000 +0200
+@@ -0,0 +1,36 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2020 Zabbix SIA
@@ -31,6 +31,7 @@
 +	_ "zabbix.com/plugins/redis"
 +	_ "zabbix.com/plugins/systemrun"
 +	_ "zabbix.com/plugins/system/uname"
++	_ "zabbix.com/plugins/system/uptime"
 +	_ "zabbix.com/plugins/web"
 +	_ "zabbix.com/plugins/zabbix/async"
 +	_ "zabbix.com/plugins/zabbix/stats"
