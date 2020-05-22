@@ -1,6 +1,6 @@
 --- src/go/plugins/plugins_freebsd.go.orig	2020-05-21 11:42:53.409675000 +0200
 +++ src/go/plugins/plugins_freebsd.go	2020-05-21 11:46:17.986388000 +0200
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,39 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2020 Zabbix SIA
