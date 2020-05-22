@@ -1,6 +1,6 @@
---- src/go/plugins/plugins_freebsd.go.orig	2020-05-21 11:42:53.409675000 +0200
-+++ src/go/plugins/plugins_freebsd.go	2020-05-21 11:46:17.986388000 +0200
-@@ -0,0 +1,36 @@
+--- src/go/plugins/net/tcp/tcp_freebsd.go.orig	2020-05-22 10:24:43 UTC
++++ src/go/plugins/net/tcp/tcp_freebsd.go
+@@ -0,0 +1,35 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2020 Zabbix SIA
@@ -20,22 +20,19 @@
 +** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 +**/
 +
-+package plugins
++package tcpudp
 +
 +import (
-+	_ "zabbix.com/plugins/kernel"
-+	_ "zabbix.com/plugins/log"
-+	_ "zabbix.com/plugins/memcached"
-+	_ "zabbix.com/plugins/mysql"
-+	_ "zabbix.com/plugins/net/netif"
-+	_ "zabbix.com/plugins/net/netif/tcp"
-+	_ "zabbix.com/plugins/net/netif/udp"
-+	_ "zabbix.com/plugins/redis"
-+	_ "zabbix.com/plugins/systemrun"
-+	_ "zabbix.com/plugins/system/uname"
-+	_ "zabbix.com/plugins/system/uptime"
-+	_ "zabbix.com/plugins/web"
-+	_ "zabbix.com/plugins/zabbix/async"
-+	_ "zabbix.com/plugins/zabbix/stats"
-+	_ "zabbix.com/plugins/zabbix/sync"
++	"errors"
++
++	"zabbix.com/pkg/plugin"
 +)
++
++func exportSystemTcpListen(port uint16) (result interface{}, err error) {
++	return nil, errors.New("Not supported.")
++}
++
++func init() {
++	plugin.RegisterMetrics(&impl, "TCP",
++		"net.tcp.port", "Checks if it is possible to make TCP connection to specified port.")
++}
