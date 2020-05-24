@@ -36,7 +36,8 @@ GH_TUPLE=	\
 		golang:xerrors:1b5146add898:golang_xerrors/src/go/vendor/golang.org/x/xerrors \
 		mattn:go-sqlite3:v2.0.3:mattn_go_sqlite3/src/go/vendor/github.com/mattn/go-sqlite3 \
 		mediocregopher:radix:v3.4.2:mediocregopher_radix_v3/src/go/vendor/github.com/mediocregopher/radix/v3 \
-		natefinch:npipe:c1b8fa8bdcce:natefinch_npipe/src/go/vendor/github.com/natefinch/npipe
+		natefinch:npipe:c1b8fa8bdcce:natefinch_npipe/src/go/vendor/github.com/natefinch/npipe \
+		shirou:gopsutil:v2.20.4:shirou_gopsutil/src/go/vendor/github.com/shirou/gopsutil
 
 PLIST=	${PKGDIR}/pkg-plist.agent2
 

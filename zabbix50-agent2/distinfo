@@ -1,4 +1,4 @@
-TIMESTAMP = 1589968504
+TIMESTAMP = 1590330957
 SHA256 (zabbix-5.0.0.tar.gz) = 5a1762fd2bb7275d9a28c6dfa9a6d46d84be749f9bf50a36eb8fcd20fb8bb6eb
 SIZE (zabbix-5.0.0.tar.gz) = 18519888
 SHA256 (alimy-mc-v2.0.3_GH0.tar.gz) = 0ac06190a767bc0fcf74fbb7e565fa0742a6f5425440c337a15246a41aca309e
@@ -23,3 +23,5 @@ SHA256 (mediocregopher-radix-v3.4.2_GH0.tar.gz) = 3b26042bed210daca2354b43e476e4
 SIZE (mediocregopher-radix-v3.4.2_GH0.tar.gz) = 93999
 SHA256 (natefinch-npipe-c1b8fa8bdcce_GH0.tar.gz) = 6e3de30412671aba8f89008b2411126378a4dd2bddff095312d7a88a1670d3ab
 SIZE (natefinch-npipe-c1b8fa8bdcce_GH0.tar.gz) = 12421
+SHA256 (shirou-gopsutil-v2.20.4_GH0.tar.gz) = de25e312ca9ddb9742a7509f6acc82566d2b6c2f4ac2a32011098d1307265eaa
+SIZE (shirou-gopsutil-v2.20.4_GH0.tar.gz) = 137165
