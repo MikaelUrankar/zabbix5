@@ -1,6 +1,6 @@
 --- src/go/plugins/system/users/users_freebsd.go.orig	2020-05-24 19:02:07 UTC
 +++ src/go/plugins/system/users/users_freebsd.go
-@@ -0,0 +1,32 @@
+@@ -0,0 +1,30 @@
 +/*
 +** Zabbix
 +** Copyright (C) 2001-2019 Zabbix SIA
@@ -24,8 +24,6 @@
 +
 +import (
 +	"github.com/shirou/gopsutil/host"
-+
-+	"zabbix.com/pkg/pdh"
 +)
 +
 +func getUsersNum() (num int, err error) {
