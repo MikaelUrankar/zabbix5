@@ -1,5 +1,5 @@
---- users_freebsd.go.orig	2020-05-24 19:02:07.415594000 +0200
-+++ users_freebsd.go	2020-05-24 16:35:46.611980000 +0200
+--- src/go/plugins/system/users/users_freebsd.go.orig	2020-05-24 19:02:07 UTC
++++ src/go/plugins/system/users/users_freebsd.go
 @@ -0,0 +1,32 @@
 +/*
 +** Zabbix
